@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Genel arka plan ve tema renkleri */
+        body {
+            background-color: #f0f2f5;
+            font-family: Arial, sans-serif;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Arka plan resmi ekleme */
+        .background-img {
+            background-image: url('https://source.unsplash.com/1600x900/?car,rent');
+            background-size: cover;
+            background-position: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+            filter: blur(3px);
+        }
+
+        /* Form kutusu tasarımı */
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin-top: 80px;
+        }
+
+        h2 {
+            color: #007bff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Buton stilleri */
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Arka plan resmi -->
+    <div class="background-img"></div>
+
+    <div class="container d-flex justify-content-center">
+        <div class="form-container">
+            <h2>Register Now</h2>
+            <form id="register-form">
+                <div class="mb-3">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="country" class="form-label">Country</label>
+                    <input type="text" class="form-control" id="country" required>
+                </div>
+                <div class="mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" class="form-control" id="city" required>
+                </div>
+                <div class="mb-3">
+                    <label for="district" class="form-label">District</label>
+                    <input type="text" class="form-control" id="district" required>
+                </div>
+                <div class="mb-3">
+                    <label for="postCode" class="form-label">PostCode</label>
+                    <input type="text" class="form-control" id="postCode" required>
+                </div>
+                <div class="mb-3">
+                    <label for="addressLine" class="form-label">Address Line</label>
+                    <textarea rows="3" class="form-control" id="addressLine" name="addressLine" required></textarea>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS ve Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript dosyası -->
+    <script src="register.js"></script>
+</body>
+
+</html>
