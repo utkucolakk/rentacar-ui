@@ -1,8 +1,11 @@
 const jwtToken = localStorage.getItem("jwtToken");
+const customerId = localStorage.getItem("customerId");
 const BASE_PATH = "http://localhost:8080/";
 const BASE_IMAGE_PATH = "/Users/utii/Documents/GitHub/rentacar/";
 
 let selectedCarDailyPrice = 0;
+let selectedCarId = null;
+let selectedBrandId = null;
 
 // Pickup Locations'ları backend'den çekmek
 async function fetchPickupLocations() {
@@ -128,30 +131,42 @@ async function fetchCarByBrand(brandId) {
 
 //--------------------------------------
 async function rentCar(carId) {
+    if (!carId) {
+        alert("Araç seçilmedi.");
+        return;
+    }
+
     const rentalStartTime = document.getElementById('rentalStartTime').value;
     const rentalEndTime = document.getElementById('rentalEndTime').value;
     const vehiclePickupPoint = document.getElementById('vehiclePickupPoint').value;
     const vehicleDeliveryPoint = document.getElementById('vehicleDeliveryPoint').value;
     const rentalCost = document.getElementById('rentalCost').value;
 
+    // rentalDetails'i swagger yapısına uygun şekilde hazırlıyoruz
     const rentalDetails = {
-        carId: carId,
-        rentalStartTime: rentalStartTime, // Tarih bilgileri DTO ile uyumlu olacak
-        rentalEndTime: rentalEndTime,
-        vehiclePickupPoint: vehiclePickupPoint, // Enum değerleri string olarak gönderiliyor
-        vehicleDeliveryPoint: vehicleDeliveryPoint,
-        rentalCost: rentalCost,
-        quantity: 1 // Kiralama adedi (opsiyonel, şimdilik sabit verdim)
+        customerId: customerId,  // Müşteri ID'si
+        carRentalList: [         // carRentalList adında bir liste
+            {
+                customerId: customerId,  // Müşteri ID'si
+                carId: carId,  // Seçilen carId'yi kullanıyoruz
+                rentalStartTime: rentalStartTime,
+                rentalEndTime: rentalEndTime,
+                vehiclePickupPoint: vehiclePickupPoint,
+                vehicleDeliveryPoint: vehicleDeliveryPoint,
+                rentalCost: parseFloat(rentalCost.replace(/[₺,.]/g, "")),  // Fiyatı sayıya çeviriyoruz
+                quantity: 1  // Kiralanan araç adeti (tek bir araç için 1)
+            }
+        ]
     };
 
     try {
-        const response = await fetch(BASE_PATH + "car-rental/rent/", {
+        const response = await fetch(BASE_PATH + "car-rental", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + jwtToken
             },
-            body: JSON.stringify(rentalDetails)
+            body: JSON.stringify(rentalDetails)  // JSON yapısında body gönderiyoruz
         });
 
         if (!response.ok) {
@@ -161,13 +176,19 @@ async function rentCar(carId) {
         }
 
         const successMessage = await response.text();
-        alert(successMessage);  // Başarılı mesajı göster
+        alert(successMessage);
 
     } catch (error) {
         console.error("Error renting car: ", error);
         alert("An error occurred while renting the car.");
     }
 }
+
+
+
+
+
+
 
 //--------------------------------------
 
@@ -222,37 +243,67 @@ function displayCars(cars) {
 }
 
 // Modal açma fonksiyonu, seçilen araç bilgilerini modal'a yükler
-function openModal(carId, carName, dailyPrice) {
+function openModal(carId, carName, dailyPrice, ) {
+    // Araç ismini başlık olarak ayarla
     document.getElementById("rentalModalTitle").innerText = carName;
-    document.getElementById("carDetails").innerText = `Daily Price: ${dailyPrice}`;
+    
+    // Fiyatı modal içinde fiyat bilgisine yazdır
+    document.getElementById("carDetails").innerText = `Daily Price: ${dailyPrice}₺`;
+    
+    // Seçilen aracın günlük fiyatını, ID'sini ve marka ID'sini global değişkenlere atama
     selectedCarDailyPrice = dailyPrice;
+    selectedCarId = carId;
+    
 
     // Modal'ı aç
     const rentalModal = new bootstrap.Modal(document.getElementById('rentalModal'));
     rentalModal.show();
+
+    // Her modal açıldığında rentButton için event listener ekleyelim
+    document.getElementById('rentButton').addEventListener('click', async function () {
+        await rentCar(selectedCarId);  // Burada carId ve brandId'yi fonksiyona geçir
+    });
 }
+
+
 
 // Fiyat hesaplama fonksiyonu
 function calculatePrice() {
-    const rentalStartTime = new Date(document.getElementById('rentalStartTime').value);
-    const rentalEndTime = new Date(document.getElementById('rentalEndTime').value);
+    // Tarihlerin boş olup olmadığını kontrol edelim
+    const rentalStartTimeValue = document.getElementById('rentalStartTime').value;
+    const rentalEndTimeValue = document.getElementById('rentalEndTime').value;
 
-    if (!rentalStartTime || !rentalEndTime || rentalStartTime >= rentalEndTime) {
-        alert("Please select valid dates.");
+    if (!rentalStartTimeValue || !rentalEndTimeValue) {
+        alert("Please enter both rental start and end times.");
         return;
     }
 
-    const diffTime = Math.abs(rentalEndTime - rentalStartTime);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    // Tarihleri Date nesnesine çeviriyoruz
+    const rentalStartTime = new Date(rentalStartTimeValue);
+    const rentalEndTime = new Date(rentalEndTimeValue);
 
-    const rentalCost = diffDays * selectedCarDailyPrice;
-    document.getElementById('rentalCost').value = `${rentalCost}₺`;
+    // Tarihlerin geçerli olup olmadığını kontrol edelim
+    if (rentalStartTime >= rentalEndTime) {
+        alert("Rental end time must be after the start time.");
+        return;
+    }
+
+    // Gün farkını hesaplayalım
+    const diffTime = rentalEndTime - rentalStartTime;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));  // Gün farkını hesapla
+
+    // Fiyatı hesapla ve göster
+    if (selectedCarDailyPrice > 0) {  // selectedCarDailyPrice'ın geçerli bir sayı olduğundan emin olun
+        const rentalCost = diffDays * selectedCarDailyPrice;
+        document.getElementById('rentalCost').value = `${rentalCost}₺`;  // Fiyatı input alanına yazdır
+    } else {
+        alert("Invalid daily price for the selected car.");
+    }
 }
+
 
 // Kiralama işlemi (simülasyon)
-function rentCar() {
-    alert("Car rented successfully!");
-}
+
 
 document.addEventListener("DOMContentLoaded", async function () {
     // Pickup ve Dropoff location'larını yükle
@@ -267,4 +318,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     brandSelect.addEventListener("change", async function () {
         await fetchCarByBrand(brandSelect.value);
     });
+
+    // Fiyat hesaplama butonuna event listener ekle
+    document.getElementById('calculatePriceBtn').addEventListener('click', function () {
+        calculatePrice();  // calculatePrice fonksiyonu tetiklenecek
+    });
 });
+
