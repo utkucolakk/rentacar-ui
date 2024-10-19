@@ -212,35 +212,52 @@ function displayBrands(brands) {
 function displayCars(cars) {
     const carList = document.getElementById("carList");
     carList.innerHTML = "";
-    cars.forEach(car => {
-        const carCard = document.createElement("div");
-        carCard.classList.add("col-md-6", "mb-4");
 
+    cars.forEach(car => {
+        // Sütun elemanı oluşturun
+        const col = document.createElement("div");
+        col.classList.add("col-md-4", "mb-4");
+
+        // Kart elemanını oluşturun
+        const card = document.createElement("div");
+        card.classList.add("card", "h-100");
+
+        // Araba resmi
         const carImage = document.createElement("img");
         carImage.src = BASE_IMAGE_PATH + car.image;
         carImage.alt = car.name;
-        carImage.style.maxWidth = "300px";
-        carImage.style.maxHeight = "300px";
+        carImage.classList.add("card-img-top");
+        carImage.style.height = "200px"; // Sabit yükseklik
+        carImage.style.objectFit = "contain"; // Resmin kartı kaplaması için
 
+        // Kart gövdesi
         const cardBody = document.createElement("div");
         cardBody.classList.add("card-body");
+
         cardBody.innerHTML = `
             <h5 class="card-title">${car.name}</h5>
-            <p> </p>
-            <p class="card-test">Color: ${car.color}</p>
-            <p class="card-test">Km: ${car.km}</p>
-            <p class="card-test">Transmission Type: ${car.transmissionType}</p>
-            <p class="card-test">Fuel Type: ${car.fuelType}</p>
-            <p class="card-text">Daily Price: ${car.dailyPrice}</p>
-            <button class="btn btn-primary" onclick="openModal(${car.id}, '${car.name}', ${car.dailyPrice})">Rent Car</button>
+            <p>Color: ${car.color}</p>
+            <p>Km: ${car.km}</p>
+            <p>Transmission Type: ${car.transmissionType}</p>
+            <p>Fuel Type: ${car.fuelType}</p>
+            <p>Daily Price: ${car.dailyPrice}</p>
         `;
 
-        carCard.appendChild(carImage);
-        carCard.appendChild(cardBody);
+        // Kirala butonu
+        const rentButton = document.createElement("button");
+        rentButton.classList.add("btn", "btn-primary");
+        rentButton.textContent = "Rent Car";
+        rentButton.onclick = () => openModal(car.id, car.name, car.dailyPrice);
 
-        carList.appendChild(carCard);
+        // Elemanları birleştir
+        cardBody.appendChild(rentButton);
+        card.appendChild(carImage);
+        card.appendChild(cardBody);
+        col.appendChild(card);
+        carList.appendChild(col);
     });
 }
+
 
 // Modal açma fonksiyonu, seçilen araç bilgilerini modal'a yükler
 function openModal(carId, carName, dailyPrice, ) {
