@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Management</title>
+    <!-- Bootstrap CSS dosyasını ekleyin -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <header>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#" onclick="loadPage('admin')">Rent a Car</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin.html">Car Management</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="loadPage('reservation')">Reservation</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5">
+        <h2>Brand Management</h2>
+        <form id="brandForm" class="mb-4">
+            <div class="form-group">
+                <label for="brandName">Brand Name</label>
+                <input type="text" class="form-control" id="brandName" name="brandName" required>
+            </div>
+            <button type="button" class="btn btn-primary" id="addBrandBtn">Add Brand </button>
+        </form>
+
+        <!-- Brand Table -->
+        <table id="brandTable" class="table">
+            <thead>
+                <tr>
+                    <th>Brand Id</th>
+                    <th>Brand Name</th>
+                    <th>Process</th>
+                </tr>
+            </thead>
+            <tbody id="brandTableBody"></tbody>
+        </table>
+    </div>
+
+    <!-- Brand Update Modal-->
+    <div class="modal fade" id="updateBrandModal" tabindex="-1" role="dialog" aria-labelledby="updateBrandModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateBrandModalLabel">Update Brand</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateBrandForm">
+                        <input type="hidden" id="updateBrandId">
+                        <div class="form-group">
+                            <label for="updateBrandName">Brand Name</label>
+                            <input type="text" class="form-control" id="updateBrandName" name="updateBrandName"
+                                required>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="updateBrandBtn">Update Brand</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Bootstrap JS ve Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript dosyası -->
+    <script src="brand.js"></script>
+</body>
+
+</html>

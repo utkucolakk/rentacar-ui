@@ -19,13 +19,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="loadPage('brand')">Brands</a>
+                        <a class="nav-link" href="brand.html">Brand</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" onclick="loadPage('reservation')">Reservation</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                        <a class="nav-link" href="login.html">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -41,7 +41,7 @@
                         <h3>Admin Panel</h3>
                     </div>
                     <div class="card-body">
-                        <button class="btn btn-success mb-3" data-bs-toggle="modal"data-bs-target="#addCarModal">
+                        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addCarModal">
                             Add Car</button>
                         <table class="table">
                             <thead>
@@ -52,12 +52,10 @@
                                     <th>Daily Price</th>
                                     <th>Car Available Stock</th>
                                     <th>Km</th>
-                                    <th>Transmission Type</th> 
+                                    <th>Transmission Type</th>
                                     <th>Fuel Type</th>
-                                    <th>Active</th>
                                     <th>Image</th>
-                                    <th>Car Status</th>
-                                    <th>Is Rented</th> 
+                                    <th>Active</th>
                                     <th>Process</th>
                                 </tr>
                             </thead>
@@ -126,7 +124,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="image" class="form-label">Image</label>
-                            <input type="file" class="form-control" id="carImage"  accept="image/*" required>
+                            <input type="file" class="form-control" id="carImage" accept="image/*" required>
                         </div>
                         <button type="button" class="btn btn-primary" onclick="addCar()">Add Car</button>
                     </form>
@@ -135,8 +133,72 @@
         </div>
     </div>
 
-
-
+    <!-- Update Car Modal -->
+    <div class="modal fade" id="updateCarModal" tabindex="-1" aria-labelledby="updateCarModalLabel"
+     aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateCarModalLabel">Update Car</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateCarForm" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <input type="hidden" class="form-control" id="updateCarId">
+                        </div>
+                        <div class="mb-3">
+                            <label for="carBrandId" class="form-label">Brand Id</label>
+                            <input type="text" class="form-control" id="updateCarBrandId" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="carName" class="form-label">Car Name</label>
+                            <input type="text" class="form-control" id="updateCarName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="carColor" class="form-label">Color</label>
+                            <input type="text" class="form-control" id="updateCarColor" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="carDailyPrice" class="form-label">Daily Price</label>
+                            <input type="number" class="form-control" id="updateCarDailyPrice" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="carAvailableStock" class="form-label">Car Available Stock</label>
+                            <input type="number" class="form-control" id="updateCarAvailableStock" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="carKm" class="form-label">Km</label>
+                            <input type="number" class="form-control" id="updateCarKm" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="carTransmissionType" class="form-label">Transmission Type</label>
+                            <select class="form-select" id="updateCarTransmissionType" required>
+                                <option value="AUTOMATIC">AUTOMATIC</option>
+                                <option value="MANUAL">MANUAL</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="carFuelType" class="form-label">Fuel Type</label>
+                            <select class="form-select" id="updateCarFuelType" required>
+                                <option value="GASOLINE">GASOLINE</option>
+                                <option value="DIESEL">DIESEL</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <label for="carActive" class="form-check-label">Active</label>
+                            <input type="checkbox" class="form-check-input" id="updateCarActive" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="carImage" class="form-label">Image</label>
+                            <input type="file" class="form-control" id="updateCarImage" accept="image/*">
+                        </div>
+                        <button type="button" class="btn btn-warning" onclick="saveUpdateCar()">Update Car</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
