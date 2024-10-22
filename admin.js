@@ -2,6 +2,7 @@ const BASE_PATH = "http://localhost:8080/"
 const BASE_IMAGE_PATH = "/Users/utii/Documents/GitHub/rentacar/";
 const jwtToken = localStorage.getItem('jwtToken');
 
+var currentId = 0;
 let carList = [];
 
 async function addCar() {
@@ -32,7 +33,7 @@ async function addCar() {
         active: carActive
     };
 
-    formData.append('car', new Blob([JSON.stringify(carData)], { type: 'application/json' })); 
+    formData.append('car', new Blob([JSON.stringify(carData)], { type: 'application/json' }));
 
     await fetch(BASE_PATH + "car/create", {
         method: "POST",
@@ -44,13 +45,13 @@ async function addCar() {
         if (!response.ok) {
             throw new Error("Failed to add car, response status: " + response.status);
         }
-        return response.json();
+        hideModal('addCarModal');
+        clearModalValues();
+        getAllCar();
     }).then(data => {
         console.log(data);
-        alert("Car added successfully!");
     }).catch(error => {
         console.error("Error adding car: ", error);
-        alert("Error adding car.");
     });
 }
 
@@ -70,14 +71,14 @@ async function getAllCar() {
         console.log("carList: ", carList);
         await renderCarTable(carList);
     } catch (error) {
-        console.error("error: ", error);   
+        console.error("error: ", error);
     }
 }
 
 async function renderCarTable(carList) {
     const carTableBody = document.getElementById('carTableBody');
     carTableBody.innerHTML = '';
-               
+
     carList.forEach(car => {
         const row = carTableBody.insertRow();
         row.innerHTML = `
@@ -94,118 +95,144 @@ async function renderCarTable(carList) {
             <td>
                 <div class="d-flex gap-2">
                 <button class="btn btn-warning" onclick="updateCar(${car.id})">Update</button>
-                <button class="btn btn-danger" onclick="deleteCar(${car.id})">Delete</button>
+                <button class="btn btn-danger" onclick="showDeleteCarModal(${car.id})">Delete</button>
                 </div>
             </td>
         `;
     });
 }
 
-function deleteCar(carId) {
-    const confirmed = confirm("Are you sure you want to delete this car?");
-    if (confirmed) {
+function showDeleteCarModal(carId) {
+    currentId = carId
+    const deleteCarModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('deleteCarModal'));
+    deleteCarModal.show();
+}
+
+function hideModal(modalId) {
+    const deleteCarModal = bootstrap.Modal.getOrCreateInstance(document.getElementById(modalId));
+    deleteCarModal.hide();
+}
+
+function clearModalValues() {
+    document.getElementById('carImage').value = '';
+    document.getElementById('carBrandId').value = '';
+    document.getElementById('carName').value = '';
+    document.getElementById('carColor').value = '';
+    document.getElementById('carDailyPrice').value = '';
+    document.getElementById('carAvailableStock').value = '';
+    document.getElementById('carKm').value = '';
+    document.getElementById('carTransmissionType').value = '';  // Dropdown'dan değer alınıyor
+    document.getElementById('carFuelType').value = '';  // Dropdown'dan değer alınıyor
+    document.getElementById('carActive').checked = '';  // Checkbox durumunu kontrol ediyoruz
+
+}
+
+
+    function deleteCar() {
+        if (currentId !== 0) {
+            fetch(BASE_PATH + "car/" + currentId, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + jwtToken
+                }
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to delete car, response status: " + response.status);
+                }
+                hideModal('deleteCarModal');
+                getAllCar();
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    }
+
+    function updateCar(carId) {
         fetch(BASE_PATH + "car/" + carId, {
-            method: "DELETE",
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + jwtToken
             }
         }).then(response => {
             if (!response.ok) {
-                throw new Error("Failed to delete car, response status: " + response.status);
+                throw new Error("Failed to get car, response status: " + response.status);
             }
-            getAllCar();
+            return response.json();
+        }).then(car => {
+            document.getElementById('updateCarId').value = car.id;
+            document.getElementById('updateCarBrandId').value = car.brandId;
+            document.getElementById('updateCarName').value = car.name;
+            document.getElementById('updateCarColor').value = car.color;
+            document.getElementById('updateCarDailyPrice').value = car.dailyPrice;
+            document.getElementById('updateCarAvailableStock').value = car.availableCount;
+            document.getElementById('updateCarKm').value = car.km;
+            document.getElementById('updateCarTransmissionType').value = car.transmissionType;  // Dropdown'danROTO alınıyor
+            document.getElementById('updateCarFuelType').value = car.fuelType;  // Dropdown'danROTO alınıyor
+            document.getElementById('updateCarActive').checked = car.active;
+            const updateCarModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('updateCarModal'));
+            updateCarModal.show();
         }).catch(error => {
             console.error('Error:', error);
         });
     }
-}
 
-function updateCar(carId) {
-    fetch(BASE_PATH + "car/" + carId, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + jwtToken
-        }
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error("Failed to get car, response status: " + response.status);
-        }
-        return response.json();
-    }).then(car => {
-        document.getElementById('updateCarId').value = car.id;
-        document.getElementById('updateCarBrandId').value = car.brandId;
-        document.getElementById('updateCarName').value = car.name;
-        document.getElementById('updateCarColor').value = car.color;
-        document.getElementById('updateCarDailyPrice').value = car.dailyPrice;
-        document.getElementById('updateCarAvailableStock').value = car.availableCount;
-        document.getElementById('updateCarKm').value = car.km;
-        document.getElementById('updateCarTransmissionType').value = car.transmissionType;  // Dropdown'danROTO alınıyor
-        document.getElementById('updateCarFuelType').value = car.fuelType;  // Dropdown'danROTO alınıyor
-        document.getElementById('updateCarActive').checked = car.active;
-        const updateCarModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('updateCarModal'));
-        updateCarModal.show();
-    }).catch(error => {
-        console.error('Error:', error);
+    function saveUpdateCar() {
+        const updateCarId = document.getElementById('updateCarId').value
+        const updateCarBrandId = document.getElementById('updateCarBrandId').value;
+        const updateCarName = document.getElementById('updateCarName').value;
+        const updateCarColor = document.getElementById('updateCarColor').value;
+        const updateCarDailyPrice = document.getElementById('updateCarDailyPrice').value;
+        const updateCarAvailableStock = document.getElementById('updateCarAvailableStock').value;
+        const updateCarKm = document.getElementById('updateCarKm').value;
+        const updateCarTransmissionType = document.getElementById('updateCarTransmissionType').value;
+        const updateCarFuelType = document.getElementById('updateCarFuelType').value;
+        const updateCarActive = document.getElementById('updateCarActive').checked;
+
+        const updateCarImage = document.getElementById('updateCarImage');
+        const carData = {
+            id: updateCarId,
+            brandId: updateCarBrandId,
+            name: updateCarName,
+            color: updateCarColor,
+            dailyPrice: updateCarDailyPrice,
+            availableCount: updateCarAvailableStock,
+            km: updateCarKm,
+            transmissionType: updateCarTransmissionType,  // Enum değerleri gönderiliyor
+            fuelType: updateCarFuelType,  // Enum değerleri gönderiliyor
+            active: updateCarActive
+        };
+
+        const formData = new FormData();
+        formData.append('file', feditedSelectedImage = updateCarImage.files[0]);
+        formData.append('car', new Blob([JSON.stringify(carData)], { type: 'application/json' }));
+
+        fetch(BASE_PATH + "car/update", {
+            method: "PUT",
+            body: formData,
+            headers: {
+                "Authorization": "Bearer " + jwtToken
+            }
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to update car, response status: " + response.status);
+            }
+            getAllCar();
+            closeUpdateCarModal();
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+
+    }
+
+    async function closeUpdateCarModal() {
+        console.log("modal close")
+        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('updateCarModal'));
+        modal.hide();
+
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        await getAllCar();
     });
-}
-
-function saveUpdateCar() {
-    const updateCarId = document.getElementById('updateCarId').value
-    const updateCarBrandId = document.getElementById('updateCarBrandId').value;
-    const updateCarName = document.getElementById('updateCarName').value; 
-    const updateCarColor = document.getElementById('updateCarColor').value;
-    const updateCarDailyPrice = document.getElementById('updateCarDailyPrice').value;
-    const updateCarAvailableStock = document.getElementById('updateCarAvailableStock').value;
-    const updateCarKm = document.getElementById('updateCarKm').value;
-    const updateCarTransmissionType = document.getElementById('updateCarTransmissionType').value;
-    const updateCarFuelType = document.getElementById('updateCarFuelType').value;
-    const updateCarActive = document.getElementById('updateCarActive').checked;
-    
-    const updateCarImage = document.getElementById('updateCarImage');
-    const carData = {
-        id: updateCarId,
-        brandId: updateCarBrandId,
-        name: updateCarName,
-        color: updateCarColor,
-        dailyPrice: updateCarDailyPrice,
-        availableCount: updateCarAvailableStock,
-        km: updateCarKm,
-        transmissionType: updateCarTransmissionType,  // Enum değerleri gönderiliyor
-        fuelType: updateCarFuelType,  // Enum değerleri gönderiliyor
-        active: updateCarActive
-    };
-
-    const formData = new FormData();
-    formData.append('file', feditedSelectedImage = updateCarImage.files[0]);
-    formData.append('car', new Blob([JSON.stringify(carData)], { type: 'application/json' }));
-
-    fetch(BASE_PATH + "car/update", {
-        method: "PUT",
-        body: formData,
-        headers: {
-            "Authorization": "Bearer " + jwtToken
-        }
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error("Failed to update car, response status: " + response.status);
-        }
-        getAllCar();
-        closeUpdateCarModal();
-    }).catch(error => {
-        console.error('Error:', error);
-    });
-
-}
-
-async function closeUpdateCarModal() {
-    console.log("modal close")
-    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('updateCarModal'));
-    modal.hide();
-
-}
-         
-document.addEventListener("DOMContentLoaded", async  () => {
-    await getAllCar();
-});

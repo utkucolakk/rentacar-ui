@@ -7,6 +7,12 @@
     <title>Brand Management</title>
     <!-- Bootstrap CSS dosyasını ekleyin -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        #success-alert,
+        #fail-alert {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -75,13 +81,50 @@
                             <input type="text" class="form-control" id="updateBrandName" name="updateBrandName"
                                 required>
                         </div>
-                        <button type="button" class="btn btn-primary" id="updateBrandBtn">Update Brand</button>
+                        <button type="button" class="btn btn-primary" id="updateBrandBtn" onclick="updateBrand()">Update
+                            Brand</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Delete Brand Modal -->
+    <div class="modal fade" id="deleteBrandModal" tabindex="-1" role="dialog" aria-labelledby="deleteBrandModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteBrandModalLabel">Delete Car</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this brand?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        aria-label="Close">Close</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteBrand()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Todo it should show error right top-->
+    <div id="success-alert" class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong id="succesAlertMessage"></strong>
+        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <!-- Todo it should show error right top-->
+    <div id="fail-alert" class="alert alert-danger alert-dismissible fade show" role="alert"></div>
+    <strong id="failAlertMessage"></strong>
+    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
 
 
     <!-- Bootstrap JS ve Popper JS -->
