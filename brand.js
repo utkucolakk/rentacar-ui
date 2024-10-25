@@ -101,27 +101,37 @@ function showDeleteBrandModal(brandId) {
     deleteCarModal.show();
 }
 
-function deleteBrand() {
+async function deleteBrand() {
     if (currentBrandId !== 0) {
-        fetch(BASE_PATH + "brand/" + currentBrandId, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + jwtToken
-            }
-        }).then( async response => {
-            if (!response.ok) {
+        try {
+            const response = await fetch(BASE_PATH + "brand/" + currentBrandId, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + jwtToken
+                }
+            });
+
+            if (response.ok) {
+                showSuccesAlert("Brand deleted successfully");
+                getAllBrand();
+            } else {
                 const data = await response.json();
-                showFailAlert(data.message);
-                throw new Error(data.message);
-            } 
-            //hideModal('deleteBrandModal');
-            getAllBrand();
-        }).catch(error => {
-            hideModal('deleteBrandModal'); // Todo does not work.
-        });
+                if (data && data.message) {
+                    showFailAlert(data.message);
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showFailAlert("Failed to delete the brand.");
+        } finally {
+            hideModal('deleteBrandModal');
+        }
     }
 }
+
+                
+           
 
 function showSuccesAlert(message) {
     let alert = document.getElementById('success-alert');
@@ -169,8 +179,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     //brand add, form listener
     document.getElementById('addBrandBtn').addEventListener('click', function () {
-        //form verilerini al
+        // Form verilerini al
         const brandName = document.getElementById('brandName').value;
+    
         fetch(BASE_PATH + "brand/create", {
             method: "POST",
             headers: {
@@ -186,10 +197,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
             return response.json();
         }).then(brand => {
-            getAllBrand();
+            getAllBrand();  // Tüm markaları yeniden yükle
+            showSuccesAlert("Brand added successfully");  // Başarı mesajını göster
         }).catch(error => {
             console.error('Error:', error);
-        })
-    })
+            showFailAlert("Failed to add brand");  // Hata mesajını göster
+        });
+    });
+    
 
 });
