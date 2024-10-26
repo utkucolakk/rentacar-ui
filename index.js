@@ -218,7 +218,7 @@ function displayCars(cars) {
     cars.forEach(car => {
         // Sütun elemanı oluşturun
         const col = document.createElement("div");
-        col.classList.add("col-md-4", "mb-4");
+        col.classList.add("col");
 
         // Kart elemanını oluşturun
         const card = document.createElement("div");
@@ -229,8 +229,8 @@ function displayCars(cars) {
         carImage.src = BASE_IMAGE_PATH + car.image;
         carImage.alt = car.name;
         carImage.classList.add("card-img-top");
-        carImage.style.height = "200px"; // Sabit yükseklik
-        carImage.style.objectFit = "contain"; // Resmin kartı kaplaması için
+        carImage.style.height = "200px"; // Yükseklik ayarı
+        carImage.style.objectFit = "contain"; // Oranı korur
 
         // Kart gövdesi
         const cardBody = document.createElement("div");
