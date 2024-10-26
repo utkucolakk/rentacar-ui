@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brand Management</title>
     <!-- Bootstrap CSS dosyasını ekleyin -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         #success-alert,
         #fail-alert {
@@ -18,6 +18,10 @@
             width: 300px;
             padding: 15px;
         }
+
+        #addBrandBtn {
+            margin-top: 10px; /* Butonun üst kısmına boşluk ekleniyor */
+        }
     </style>
 </head>
 
@@ -25,20 +29,29 @@
     <header>
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="#" onclick="loadPage('admin')">Rent a Car</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="admin.html">Car Management</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="login.html">Logout</a>
-                    </li>
-                </ul>
+            <div class="container">
+                <a class="navbar-brand" href="#" onclick="loadPage('admin')">Rent a Car</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <!-- Sol tarafa hizalanmış menü -->
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin.html">Car Management</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="ongoing-rentals.html">On Going Rentals</a>
+                        </li>
+                    </ul>
+                    <!-- Sağ tarafa hizalanmış Logout -->
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.html">Logout</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </nav>
     </header>
@@ -50,7 +63,8 @@
                 <label for="brandName">Brand Name</label>
                 <input type="text" class="form-control" id="brandName" name="brandName" required>
             </div>
-            <button type="button" class="btn btn-primary" id="addBrandBtn">Add Brand </button>
+            <!-- Butonun üst kısmına boşluk ekleniyor -->
+            <button type="button" class="btn btn-primary" id="addBrandBtn">Add Brand</button>
         </form>
 
         <!-- Brand Table -->
@@ -66,26 +80,23 @@
         </table>
     </div>
 
-    <!-- Brand Update Modal-->
+
+    <!-- Brand Update Modal -->
     <div class="modal fade" id="updateBrandModal" tabindex="-1" role="dialog" aria-labelledby="updateBrandModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="updateBrandModalLabel">Update Brand</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="updateBrandForm">
                         <input type="hidden" id="updateBrandId">
                         <div class="form-group">
                             <label for="updateBrandName">Brand Name</label>
-                            <input type="text" class="form-control" id="updateBrandName" name="updateBrandName"
-                                required>
+                            <input type="text" class="form-control" id="updateBrandName" name="updateBrandName" required>
                         </div>
-                        <button type="button" class="btn btn-primary" id="updateBrandBtn" onclick="updateBrand()">Update
-                            Brand</button>
+                        <button type="button" class="btn btn-primary" id="updateBrandBtn" onclick="updateBrand()">Update Brand</button>
                     </form>
                 </div>
             </div>
@@ -93,20 +104,18 @@
     </div>
 
     <!-- Delete Brand Modal -->
-    <div class="modal fade" id="deleteBrandModal" tabindex="-1" role="dialog" aria-labelledby="deleteBrandModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="deleteBrandModal" tabindex="-1" role="dialog" aria-labelledby="deleteBrandModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteBrandModalLabel">Delete Car</h5>
+                    <h5 class="modal-title" id="deleteBrandModalLabel">Delete Brand</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     Are you sure you want to delete this brand?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                        aria-label="Close">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
                     <button type="button" class="btn btn-danger" onclick="deleteBrand()">Delete</button>
                 </div>
             </div>
@@ -115,25 +124,19 @@
 
     <div id="success-alert" class="alert alert-success alert-dismissible fade show" role="alert">
         <strong id="succesAlertMessage"></strong>
-        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    
+
     <div id="fail-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong id="failAlertMessage"></strong>
-        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-    
 
-     <!-- Footer -->
-     <footer class="bg-dark text-white text-center py-3 fixed-bottom">
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 fixed-bottom">
         <div class="container">
             <span>© 2024 Rent a Car. All Rights Reserved.</span>
-            <span class="ms-3">Contact us: <a href="mailto:info@rentacar.com"
-                    class="text-white">info@rentacar.com</a></span>
+            <span class="ms-3">Contact us: <a href="mailto:info@rentacar.com" class="text-white">info@rentacar.com</a></span>
         </div>
     </footer>
 
