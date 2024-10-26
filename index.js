@@ -238,11 +238,11 @@ function displayCars(cars) {
 
         cardBody.innerHTML = `
             <h5 class="card-title">${car.name}</h5>
-            <p>Color: ${car.color}</p>
-            <p>Km: ${car.km}</p>
-            <p>Transmission Type: ${car.transmissionType}</p>
-            <p>Fuel Type: ${car.fuelType}</p>
-            <p>Daily Price: ${car.dailyPrice}</p>
+            <p><strong>Color:</strong> ${car.color}</p>
+            <p><strong>Km:</strong> ${car.km}</p>
+            <p><strong>Transmission Type:</strong> ${car.transmissionType}</p>
+            <p><strong>Fuel Type:</strong> ${car.fuelType}</p>
+            <p><strong>Daily Price:</strong> ${car.dailyPrice}</p>
         `;
 
         // Kirala butonu
