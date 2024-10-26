@@ -17,6 +17,25 @@
             height: 220px;
             object-fit: cover;
         }
+
+        .modal-header.bg-success {
+            background-color: #0d6efd !important; /* Bootstrap Primary Blue */
+        }
+
+        .btn-success {
+            background-color: #0d6efd !important; /* Bootstrap Primary Blue */
+            border-color: #0d6efd !important; /* Bootstrap Primary Blue */
+        }
+
+        .btn-success:hover {
+            background-color: #0b5ed7 !important; /* Darker Blue */
+            border-color: #0a58ca !important; /* Darker Blue */
+        }
+
+        .bi-check-circle-fill {
+            font-size: 3rem;
+            color: #0d6efd !important; /* Bootstrap Primary Blue */
+        }
     </style>
 </head>
 
@@ -38,9 +57,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Cars</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Reservation</a>
-                    </li>
                 </ul>
                 <ul class="navbar-nav ms-auto"> <!-- ms-auto ile sağa itiliyor -->
                     <li class="nav-item">
@@ -56,6 +72,7 @@
     <div class="col-md-4 ">
         <h2>Brand</h2>
         <select id="brandSelect" class="form-select" aria-label="Select Brand">
+            <option value="" selected disabled>Select Brand</option>
             <!-- Kategoriler backend tarafından çekilecek -->
         </select>
     </div>
@@ -113,6 +130,25 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button id="rentButton" type="button" class="btn btn-primary">Rent Car</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="successModalLabel">Transaction Successful</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <i class="bi bi-check-circle-fill text-success display-4 mb-3"></i>
+                    <p class="fs-5">Car rental process completed successfully!</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Ok</button>
                 </div>
             </div>
         </div>

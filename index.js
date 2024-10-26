@@ -171,18 +171,20 @@ async function rentCar(carId) {
 
         if (!response.ok) {
             const errorMessage = await response.text();
-            alert("Error: " + errorMessage);
+            alert("Hata: " + errorMessage);
             return;
         }
 
-        const successMessage = await response.text();
-        alert(successMessage);
+        // İşlem başarılıysa başarı modalını göster
+        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
 
     } catch (error) {
-        console.error("Error renting car: ", error);
-        alert("An error occurred while renting the car.");
+        console.error("Araç kiralanırken hata oluştu: ", error);
+        alert("Araç kiralanırken bir hata oluştu.");
     }
 }
+
 
 
 
@@ -198,7 +200,7 @@ async function rentCar(carId) {
 // Markaları dropdown'a yükleme
 function displayBrands(brands) {
     const brandSelect = document.getElementById("brandSelect");
-    brandSelect.innerHTML = ""; // Önceki kategorileri temizle
+    brandSelect.innerHTML = '<option value="" disabled selected>Select Brand</option>';
 
     brands.forEach(brand => {
         const option = document.createElement("option");
