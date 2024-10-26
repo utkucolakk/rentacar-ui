@@ -1,7 +1,8 @@
 const BASE_PATH = "http://localhost:8080/"
 
+document.getElementById('registerButton').addEventListener('click', (event) => {
+    event.preventDefault(); // Sayfanın yenilenmesini engelle
 
-function submitForm() {
     const formData = {
         email: document.getElementById('email').value,
         password: document.getElementById('password').value,
@@ -11,12 +12,12 @@ function submitForm() {
             country: document.getElementById('country').value,
             city: document.getElementById('city').value,
             district: document.getElementById('district').value,
-            postCode: document.getElementById('postCode').value,
-            addressLine: document.getElementById('addressLine').value
+            postCode: document.getElementById('postcode').value,
+            addressLine: document.getElementById('address').value
         }
     };
 
-    console.log("form datası: ", formData);
+    console.log("Form Data: ", formData);
 
     fetch(BASE_PATH + "customer/register", {
         method: "POST",
@@ -26,13 +27,14 @@ function submitForm() {
         }
     }).then(response => {
         if (!response.ok) {
-            throw new Error("Kayıt isteği basarısız durum kodu : " + response.status);
+            throw new Error("Registration failed, status code: " + response.status);
         }
         return response.json();
     }).then(data => {
-        console.log(data)
+        console.log(data);
         window.location.href = "login.html";
     }).catch(error => {
         console.error(error);
+        alert("Registration failed: " + error.message);
     });
-} 
+});
