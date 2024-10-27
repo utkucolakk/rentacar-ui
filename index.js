@@ -185,13 +185,6 @@ async function rentCar(carId) {
     }
 }
 
-
-
-
-
-
-
-
 //--------------------------------------
 
 
@@ -284,11 +277,24 @@ function openModal(carId, carName, dailyPrice, ) {
     });
 }
 
+$(function () {
+    // Tarih seçiciyi başlat
+    $(".datepicker").datepicker({
+        dateFormat: "yy-mm-dd",
+        minDate: 0, // Bugünden önceki tarihler devre dışı
+        onSelect: function(selectedDate) {
+            // Eğer başlangıç tarihi seçildiyse, bitiş tarihini sınırlayın
+            if (this.id === 'rentalStartTime') {
+                const startDate = $(this).datepicker('getDate');
+                $('#rentalEndTime').datepicker('option', 'minDate', startDate); // Bitiş tarihini sınırlayın
+            }
+        }
+    });
+});
 
 
 // Fiyat hesaplama fonksiyonu
 function calculatePrice() {
-    // Tarihlerin boş olup olmadığını kontrol edelim
     const rentalStartTimeValue = document.getElementById('rentalStartTime').value;
     const rentalEndTimeValue = document.getElementById('rentalEndTime').value;
 
@@ -297,24 +303,28 @@ function calculatePrice() {
         return;
     }
 
-    // Tarihleri Date nesnesine çeviriyoruz
     const rentalStartTime = new Date(rentalStartTimeValue);
     const rentalEndTime = new Date(rentalEndTimeValue);
+    const today = new Date();
 
-    // Tarihlerin geçerli olup olmadığını kontrol edelim
+    // Geçmiş tarih kontrolü
+    if (rentalStartTime < today) {
+        alert("Rental start time cannot be in the past.");
+        return;
+    }
+
+    // Başlangıç ve bitiş tarihi kontrolü
     if (rentalStartTime >= rentalEndTime) {
         alert("Rental end time must be after the start time.");
         return;
     }
 
-    // Gün farkını hesaplayalım
     const diffTime = rentalEndTime - rentalStartTime;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));  // Gün farkını hesapla
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    // Fiyatı hesapla ve göster
-    if (selectedCarDailyPrice > 0) {  // selectedCarDailyPrice'ın geçerli bir sayı olduğundan emin olun
+    if (selectedCarDailyPrice > 0) {
         const rentalCost = diffDays * selectedCarDailyPrice;
-        document.getElementById('rentalCost').value = `${rentalCost}₺`;  // Fiyatı input alanına yazdır
+        document.getElementById('rentalCost').value = `${rentalCost}₺`;
     } else {
         alert("Invalid daily price for the selected car.");
     }
@@ -341,6 +351,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Fiyat hesaplama butonuna event listener ekle
     document.getElementById('calculatePriceBtn').addEventListener('click', function () {
         calculatePrice();  // calculatePrice fonksiyonu tetiklenecek
+    });
+
+     // Success modalındaki "Ok" butonunu dinle
+     document.getElementById('successOkButton').addEventListener('click', function () {
+        // Kullanıcı "Ok" butonuna tıklayınca ana sayfaya yönlendir
+        window.location.href = "index.html";
     });
 });
 
