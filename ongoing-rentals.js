@@ -1,18 +1,16 @@
-const jwtToken = localStorage.getItem('jwtToken');
-const BASE_PATH = "http://localhost:8080/"
-
-let selectedRentalId = null; // Seçili rentalId'yi tutmak için
+const BASE_PATH = "http://localhost:8080/";
+let selectedRentalId = null;
 
 // Ongoing rentals'ı çekme fonksiyonu
 async function fetchOngoingRentals() {
-    const jwtToken = localStorage.getItem('jwtToken'); // Token'in tanımlı ve geçerli olduğundan emin olun
-    
+    const jwtToken = localStorage.getItem('jwtToken');
+
     try {
-        const response = await fetch('http://localhost:8080/car-rental/admin/ongoing-rentals', {
+        const response = await fetch(`${BASE_PATH}car-rental/admin/ongoing-rentals`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${jwtToken}` // JWT token'ini ekleyin
+                'Authorization': `Bearer ${jwtToken}`
             }
         });
 
@@ -28,13 +26,13 @@ async function fetchOngoingRentals() {
     }
 }
 
-
 // Ongoing rentals'ı tabloya ekleme fonksiyonu
 function displayOngoingRentals(rentals) {
     const ongoingRentalsBody = document.getElementById('ongoingRentalsBody');
     ongoingRentalsBody.innerHTML = '';
 
     rentals.forEach(rental => {
+        const isCompleted = rental.status === 'COMPLETED';
         const row = `
             <tr>
                 <td>${rental.carName}</td>
@@ -43,8 +41,11 @@ function displayOngoingRentals(rentals) {
                 <td>${rental.rentalEndTime}</td>
                 <td>${rental.rentalCost}₺</td>
                 <td>
-                    <button class="btn btn-success" onclick="showConfirmModal(${rental.rentalId})">
-                        Received
+                    <button class="btn ${isCompleted ? 'btn-secondary' : 'btn-success'}"
+                            ${isCompleted ? 'disabled' : ''}
+                            data-id="${rental.rentalId}"
+                            onclick="${isCompleted ? '' : 'showConfirmModal(' + rental.rentalId + ')'}">
+                        ${isCompleted ? 'Received' : 'Receive'}
                     </button>
                 </td>
             </tr>
@@ -55,32 +56,38 @@ function displayOngoingRentals(rentals) {
 
 // Modal'ı gösteren fonksiyon
 function showConfirmModal(rentalId) {
-    selectedRentalId = rentalId; // Seçili rentalId'yi kaydet
+    selectedRentalId = rentalId;
     const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
     confirmModal.show();
 }
 
-
 // Teslim Alındı işlemi
 async function receiveCar(rentalId) {
-    const token = localStorage.getItem('jwtToken');
+    const jwtToken = localStorage.getItem('jwtToken');
     try {
-        const response = await fetch(`http://localhost:8080/car-rental/admin/receive-car/${rentalId}`, {
+        const response = await fetch(`${BASE_PATH}car-rental/admin/receive-car/${rentalId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${jwtToken}`
             }
         });
 
         if (!response.ok) {
-            const errorMessage = await response.text();
-            console.error('Backend error message:', errorMessage);
-            throw new Error(`Failed to receive car. Status: ${response.status}`);
+            throw new Error('Failed to receive car');
         }
 
-        alert('Car received successfully!');
-        fetchOngoingRentals(); // Listeyi güncelle
+        // Statüyü frontend'de de güncelle
+        const button = document.querySelector(`button[data-id='${rentalId}']`);
+        if (button) {
+            button.textContent = "Received";
+            button.classList.remove('btn-success');
+            button.classList.add('btn-secondary');
+            button.setAttribute('disabled', true);
+        }
+
+        // Kiralama durumunu yeniden yükleyerek güncelle
+        fetchOngoingRentals();
     } catch (error) {
         console.error('Error:', error);
         alert('Error receiving car.');
