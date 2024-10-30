@@ -1,7 +1,7 @@
 const jwtToken = localStorage.getItem("jwtToken");
 const customerId = localStorage.getItem("customerId");
 const BASE_PATH = "http://localhost:8080/";
-const BASE_IMAGE_PATH = "/Users/utii/Documents/GitHub/rentacar/"
+const BASE_IMAGE_PATH = "/Users/utku_/Documents/GitHub/rentacar/"
 
 let selectedCarDailyPrice = 0;
 let selectedCarId = null;

@@ -1,5 +1,5 @@
 const BASE_PATH = "http://localhost:8080/"
-const BASE_IMAGE_PATH = "/Users/utii/Documents/GitHub/rentacar/";
+const BASE_IMAGE_PATH = "/Users/utku_/Documents/GitHub/rentacar/"
 const jwtToken = localStorage.getItem('jwtToken');
 
 var currentId = 0;
